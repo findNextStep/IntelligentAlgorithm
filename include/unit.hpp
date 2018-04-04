@@ -7,7 +7,7 @@
 
 namespace theNext {
 
-// 定义通用概率类型
+// 定义通用概率类型接口类
 // 此类型的数据应当小于等于1
 // 并且大于等于0
 typedef float rate_t;
@@ -26,7 +26,7 @@ public:
      *
      * @param base 交换的另一个基因
      */
-    virtual void overlap(const ::std::shared_ptr<unitBase> &base) = 0;
+   virtual void overlap(const ::std::shared_ptr<unitBase> &base) = 0;
     /**
      * @brief 获取本体的一个拷贝
      *
@@ -68,7 +68,7 @@ public:
      * 产生的子代数量将是父代的两倍
      * @return unitVector<unit> 繁殖产生的种群
      */
-    unitVector<unit>  &increase()const {
+    unitVector<unit> &increase()const {
         // 随机数种子重设
         srand((unsigned)time(NULL));
         // 保存下一代的数组
@@ -98,14 +98,14 @@ public:
         if(leave > this->group.size() / 2) {
             // 如果选择的数量大于个体数量的一半
             // 挑选死亡个体
-            std::vector<bool> select(::selectUnit(rate, this->group.size() - leave));
+            std::vector<bool> select(selectUnit(rate, this->group.size() - leave));
             for(int i = 0; i < this->group.size(); ++i) {
                 if(!select[i]) {
                     remain.push_back(group[i]);
                 }
             }
         } else {
-            std::vector<bool> select(::selectUnit(rate, this->group.size()`));
+            std::vector<bool> select(selectUnit(rate, this->group.size()));
             for(int i = 0; i < this->group.size(); ++i) {
                 if(select[i]) {
                     remain.push_back(group[i]);
@@ -115,7 +115,7 @@ public:
         this->group.resize(0);
         this->group.reserve(remain.size());
         for(auto man : remain) {
-            this-> > group.push_back(man);
+            this-> group.push_back(man);
         }
     }
 // 参数设置函数
@@ -154,11 +154,11 @@ public:
 protected:
     /**
      * @brief 对每一个父本，获取一个子代
-     * 
+     *
      * @param nextGeneration 获取子代的位置
      */
-    void oneGetOne(bv &nextGeneration){
-       for(int i = 0; i < this->group.size(); ++i) {
+    void oneGetOne(bv &nextGeneration) {
+        for(int i = 0; i < this->group.size(); ++i) {
             auto son = this->group.at(i)->copy();
             // 判断是否需要交叉
             if(needToDo(this->overlapRate)) {
@@ -172,7 +172,7 @@ protected:
             if(son) {
                 nextGeneration.push_back(son);
             }
-        } 
+        }
     }
     /**
      * @brief 进行轮盘赌选择
@@ -214,7 +214,7 @@ protected:
         this->setVariationRate(0.05).setOverlapRate(0.95)
         .setAdaptFun([](const unit & a) {
             return 1.0;
-        })
+        });
     }
     /**
      * @brief 以rate为概率返回true
