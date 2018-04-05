@@ -6,3 +6,4 @@ include_directories(
     include
 )
 add_executable(geneticAlgorithm main.cpp)
+add_executable(knapsackProblem src/knapsackProblem.cpp)

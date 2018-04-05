@@ -26,7 +26,7 @@ public:
      *
      * @param base 交换的另一个基因
      */
-   virtual void overlap(const ::std::shared_ptr<unitBase> &base) = 0;
+    virtual void overlap(const ::std::shared_ptr<unitBase> &base) = 0;
     /**
      * @brief 获取本体的一个拷贝
      *
@@ -46,7 +46,7 @@ public:
      *
      * @param init 种群包含的基因型
      */
-    unitVector(const bv &init): group(init) {
+    unitVector(const ::std::vector<::std::shared_ptr<unitBase> > &init): group(init) {
         this->defalutParam();
     }
     /**
@@ -58,6 +58,9 @@ public:
     unitVector(bv::iterator begin, bv::iterator end): group(begin, end) {
         this->defalutParam();
     }
+    unitVector(const unitVector<unit> &copy) {
+        *this = copy;
+    }
 
 // 种群操作函数
 public:
@@ -68,16 +71,20 @@ public:
      * 产生的子代数量将是父代的两倍
      * @return unitVector<unit> 繁殖产生的种群
      */
-    unitVector<unit> &increase()const {
+    unitVector<unit> increase()const {
         // 随机数种子重设
         srand((unsigned)time(NULL));
         // 保存下一代的数组
-        bv nextGeneration;
+        bv nextGeneration(this->group);
 
         // 对于所有父本，产生子代
         oneGetOne(nextGeneration);
-        oneGetOne(nextGeneration);
-        return unitVector<unit>(nextGeneration);
+        // oneGetOne(nextGeneration);
+        unitVector<unit>result(nextGeneration);
+        result.setAdaptFun(this->adaptFun);
+        result.setOverlapRate(this->overlapRate);
+        result.setVariationRate(this->variationRate);
+        return unitVector<unit>(result);
     }
     /**
      * @brief 对当前种群进行一次淘汰
@@ -91,25 +98,16 @@ public:
             return;
         }
         std::vector<double> rate(this->group.size());
-        for(int i = 0; i < this->group.size; ++i) {
-            rate[i] = this->adaptFun(*group[i]);
+        for(int i = 0; i < this->group.size(); ++i) {
+            rate[i] = this->adaptFun(*((unit *)group[i].get()));
         }
         unitVector<unit>::bv remain;
-        if(leave > this->group.size() / 2) {
-            // 如果选择的数量大于个体数量的一半
-            // 挑选死亡个体
-            std::vector<bool> select(selectUnit(rate, this->group.size() - leave));
-            for(int i = 0; i < this->group.size(); ++i) {
-                if(!select[i]) {
-                    remain.push_back(group[i]);
-                }
-            }
-        } else {
-            std::vector<bool> select(selectUnit(rate, this->group.size()));
-            for(int i = 0; i < this->group.size(); ++i) {
-                if(select[i]) {
-                    remain.push_back(group[i]);
-                }
+        int count = 0;
+        std::vector<bool> select(selectUnit(rate, leave));
+        for(int i = 0; i < this->group.size(); ++i) {
+            if(select[i]) {
+                remain.push_back(group[i]);
+                ++count;
             }
         }
         this->group.resize(0);
@@ -117,6 +115,14 @@ public:
         for(auto man : remain) {
             this-> group.push_back(man);
         }
+    }
+
+    unitVector<unit> &operator = (const unitVector<unit> &copy) {
+        this->setAdaptFun(copy.adaptFun);
+        this->setOverlapRate(copy.overlapRate);
+        this->setVariationRate(copy.variationRate);
+        this->group = copy.group;
+        return *this;
     }
 // 参数设置函数
 public:
@@ -146,9 +152,20 @@ public:
      * @param fun 适应值函数
      * @return unitVector<const unit&>& this
      */
+    template<class T>
+    unitVector<unit> &setAdaptFun(const std::function<T(const unit &)> &fun) {
+        this->adaptFun = [fun](const unit & un) {
+            return (double)fun(un);
+        };
+        return *this;
+    }
     unitVector<unit> &setAdaptFun(const std::function<double(const unit &)> &fun) {
         this->adaptFun = fun;
         return *this;
+    }
+
+    bv getGroup() {
+        return this->group;
     }
 
 protected:
@@ -157,7 +174,7 @@ protected:
      *
      * @param nextGeneration 获取子代的位置
      */
-    void oneGetOne(bv &nextGeneration) {
+    void oneGetOne(bv &nextGeneration)const  {
         for(int i = 0; i < this->group.size(); ++i) {
             auto son = this->group.at(i)->copy();
             // 判断是否需要交叉
@@ -211,7 +228,7 @@ protected:
      *
      */
     void defalutParam() {
-        this->setVariationRate(0.05).setOverlapRate(0.95)
+        this->setVariationRate(0.0005).setOverlapRate(0.55)
         .setAdaptFun([](const unit & a) {
             return 1.0;
         });
