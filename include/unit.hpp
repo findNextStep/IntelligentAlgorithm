@@ -79,7 +79,13 @@ public:
 
         // 对于所有父本，产生子代
         oneGetOne(nextGeneration);
-        // oneGetOne(nextGeneration);
+        if(this->check && this->fix) {
+            for(int i = 0; i < nextGeneration.size(); ++i) {
+                if(!this->check(nextGeneration[i])) {
+                    this->fix(nextGeneration[i]);
+                }
+            }
+        }
         unitVector<unit>result(nextGeneration);
         result.setAdaptFun(this->adaptFun);
         result.setOverlapRate(this->overlapRate);
@@ -163,8 +169,22 @@ public:
         this->adaptFun = fun;
         return *this;
     }
+    /**
+     * @brief 设置检查和修复函数
+     * 仅当两者都可以调用时才会设置
+     * @param fixFun 修复函数
+     * @param checkFun 检查函数
+     * @return unitVector<unit>& this
+     */
+    unitVector<unit> &setFixAndCheckFun(const std::function<bool(::std::shared_ptr<unitBase>&)> &fixFun, const std::function<bool(::std::shared_ptr<unitBase>&)> &checkFun) {
+        if(fixFun && checkFun) {
+            this->check = checkFun;
+            this->fix = fixFun;
+        }
+        return *this;
+    }
 
-    bv getGroup() {
+    const bv getGroup()const {
         return this->group;
     }
 
@@ -253,5 +273,9 @@ private:
     rate_t overlapRate;
     // 个体适应值计算函数
     std::function<double (const unit &)> adaptFun;
+    // 非法个体合法化
+    ::std::function<bool(::std::shared_ptr<unitBase>&)> fix;
+    // 检查个体是否非法
+    ::std::function<bool(::std::shared_ptr<unitBase>&)> check;
 };
 }

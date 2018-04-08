@@ -8,10 +8,10 @@ public:
     typedef ::std::vector<bool> DNA_t;
     typedef boolDNA unit_t;
     boolDNA(const DNA_t &DNA) : DNA(DNA) {}
-    static ::std::shared_ptr<boolDNA> makeRandomDNA(int length){
+    static ::std::shared_ptr<boolDNA> makeRandomDNA(int length) {
         DNA_t dna(length);
-        for (int i=0;i<length;++i){
-            dna[i] = rand()%2;
+        for(int i = 0; i < length; ++i) {
+            dna[i] = rand() % 2;
         }
         return ::std::make_shared<boolDNA>(dna);
     }
@@ -43,6 +43,9 @@ public:
         ::std::shared_ptr<unitBase> ptr(new boolDNA(this->DNA));
         return ptr;
     }
+    DNA_t &getDNA() {
+        return DNA;
+    } 
     const DNA_t &getDNA() const {
         return DNA;
     }
