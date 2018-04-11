@@ -6,3 +6,4 @@ include_directories(
     include
 )
 add_executable(knapsackProblem src/knapsackProblem.cpp)
+add_executable(tspProblem src/tspProblem.cpp)

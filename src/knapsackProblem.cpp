@@ -14,7 +14,7 @@ using ::std::pair;
 vector<bool> test(const vector<pair<int, int> > &things, int max_weight) {
     vector<std::shared_ptr<::theNext::unitBase> > firstGroup;
     srand((unsigned)time(NULL));
-    for(int i = 0; i < 6; ++i) {
+    for(int i = 0; i < things.size(); ++i) {
         // vector<bool> dna(things.size());
         // dna.at(i % things.size());
         // firstGroup.push_back(::std::make_shared<::theNext::DNA::boolDNA>(dna));
