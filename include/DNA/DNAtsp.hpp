@@ -3,7 +3,6 @@
 #include <vector>
 namespace theNext {
 namespace DNA {
-
 class tspDNA: public unitBase {
 public:
     typedef ::std::vector<int> DNA_t;
@@ -30,7 +29,7 @@ public:
         do {
             v = path[i];
             path[i] = others_dna[i];
-            if(findI(path, v) != -1) {
+            if(findI(path, v) == -1) {
                 i = findI(others_dna, v);
             } else {
                 break;
