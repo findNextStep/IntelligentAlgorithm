@@ -28,16 +28,18 @@ public:
 
     void overlap(const ::std::shared_ptr<unitBase> &base) {
         DNA_t others_dna(((unit_t *)base.get())->getDNA());
-        if(rand() % 2) {
-            for(int i = 0; i < this->DNA.size() / 2; ++i) {
-                this->DNA[i] = others_dna[i];
-            }
-        } else {
-            for(int i = this->DNA.size() / 2 + 1; i < this->DNA.size(); ++i) {
+        for(int i = 0; i < this->DNA.size() / 2; ++i) {
+            if(rand() % 2) {
                 this->DNA[i] = others_dna[i];
             }
         }
     }
+    //     } else {
+    //         for(int i = this->DNA.size() / 2 + 1; i < this->DNA.size(); ++i) {
+    //             this->DNA[i] = others_dna[i];
+    //         }
+    //     }
+    // }
 
     ::std::shared_ptr<unitBase> copy() {
         ::std::shared_ptr<unitBase> ptr(new boolDNA(this->DNA));
@@ -45,7 +47,7 @@ public:
     }
     DNA_t &getDNA() {
         return DNA;
-    } 
+    }
     const DNA_t &getDNA() const {
         return DNA;
     }

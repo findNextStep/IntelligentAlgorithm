@@ -30,7 +30,10 @@ int main() {
     vector<std::shared_ptr<::theNext::unitBase> > firstGroup;
     srand((unsigned)time(NULL));
     for(int i = 0; i < things.size() * 8; ++i) {
-        firstGroup.push_back(::theNext::DNA::boolDNA::makeRandomDNA(things.size()));
+        vector<bool> dna(things.size());
+        dna.at(i%things.size());
+        firstGroup.push_back(::std::make_shared<::theNext::DNA::boolDNA>(dna));
+        // firstGroup.push_back(::theNext::DNA::boolDNA::makeRandomDNA(things.size()));
     }
     ::theNext::unitVector<::theNext::DNA::boolDNA> init(firstGroup);
     init.setFixAndCheckFun(
@@ -70,33 +73,29 @@ int main() {
     });
     auto adapt = [&things, &max_weight](const ::theNext::DNA::boolDNA & dna) {
         int value = 0, weight = 0;
-        for(int i = 0; i < things.size(); ++i) {
+        for(int i = 0; i < dna.getDNA().size(); ++i) {
             if(dna.getDNA().at(i)) {
                 weight += things[i].first;
                 value += things[i].second;
             }
         }
         if(weight <= max_weight) {
-            return value;
+            return value * 1.0;
         } else {
-            return 1;
+            return 1.0;
         }
     };
     // 设置适应值计算函数，以背包内总价值为适应值
     init.setAdaptFun(adapt);
     for(int i = 0; i < 6; ++i) {
-        // cout << init.getGroup().size() << endl;
+        cout << "begin" << endl;
         init = init.increase();
-        // cout << init.getGroup().size() << endl;
         init.eliminate();
-        // cout << init.getGroup().size() << endl;
-        // cout << "endl"<<endl;
-        // cin >> n;
+        cout << "test" << endl;
     }
     auto group = init.getGroup();
     double max_adapt = 0.0;
     ::std::shared_ptr<::theNext::unitBase> best = nullptr;
-    // cout << "?>??" << group.size() << endl;
     for(int i = 0; i < group.size(); ++i) {
         double ada = adapt(*((::theNext::DNA::boolDNA *)group[i].get()));
         if(ada > max_adapt) {
@@ -112,4 +111,25 @@ int main() {
         }
     }
     cout << max_adapt << endl;
+}
+int mains() {
+    return 0;
+    int n, max_weight;
+    cin >> max_weight >> n;
+    vector<pair<int, int> > things;
+    things.reserve(n);
+    while(n--) {
+        int weight, value, num;
+        cin >> weight >> value ;
+        /**
+         * 数据存储为
+         * {
+         *      位置
+         *      {
+         *           重量，价值
+         *      }
+         * }
+         */
+        things.push_back(std::make_pair(weight, value));
+    }
 }

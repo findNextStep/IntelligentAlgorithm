@@ -5,5 +5,4 @@ add_compile_options(-std=c++11)
 include_directories(
     include
 )
-add_executable(geneticAlgorithm main.cpp)
 add_executable(knapsackProblem src/knapsackProblem.cpp)
