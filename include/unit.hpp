@@ -71,7 +71,7 @@ public:
      * 产生的子代数量将是父代的两倍
      * @return unitVector<unit> 繁殖产生的种群
      */
-    unitVector<unit> increase()const {
+    virtual unitVector<unit> increase()const {
         // 随机数种子重设
         srand((unsigned)time(NULL));
         // 保存下一代的数组
@@ -97,7 +97,7 @@ public:
      *
      * @param leave 最终剩余个体数量, 默认淘汰一半
      */
-    void eliminate(unsigned int leave = 0) {
+    virtual void eliminate(unsigned int leave = 0) {
         if(leave == 0) {
             leave = this->group.size() / 2;
         } else if(leave >= group.size()) {
@@ -264,7 +264,7 @@ protected:
         rate_t luck = rand() / rate_t(RAND_MAX);
         return luck <= rate;
     }
-private:
+protected:
     // 种群成员
     bv group;
     // 种群突变概率

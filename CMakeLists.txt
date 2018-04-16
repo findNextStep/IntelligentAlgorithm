@@ -6,4 +6,6 @@ include_directories(
     include
 )
 add_executable(knapsackProblem src/knapsackProblem.cpp)
+target_link_libraries(knapsackProblem pthread)
 add_executable(tspProblem src/tspProblem.cpp)
+target_link_libraries(tspProblem pthread)

@@ -3,6 +3,7 @@
 #include <algorithm> // std::sort
 #include "test_tool.hpp"
 #include "DNA/DNABool.hpp"
+#include "unitVectorMulti.hpp"
 #include <utility> // std::pair
 #include <vector>
 using ::std::cin;
@@ -20,7 +21,7 @@ vector<bool> test(const vector<pair<int, int> > &things, int max_weight) {
         // firstGroup.push_back(::std::make_shared<::theNext::DNA::boolDNA>(dna));
         firstGroup.push_back(::theNext::DNA::boolDNA::makeRandomDNA(things.size()));
     }
-    ::theNext::unitVector<::theNext::DNA::boolDNA> init(firstGroup);
+    ::theNext::unitVectorMulti<::theNext::DNA::boolDNA> init(firstGroup);
     init.setFixAndCheckFun(
     [&things, &max_weight](::std::shared_ptr<::theNext::unitBase> &unit) {
         int sum = 0;

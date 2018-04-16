@@ -1,16 +1,19 @@
 #include "DNA/DNAtsp.hpp"
+#include "unitVectorMulti.hpp"
 #include "test_tool.hpp"
 #include <iostream>
+#include <algorithm>  // 全排列函数
 #include <vector>
 using namespace std;
 using namespace theNext;
+const int maxCost = 256;
 vector<int> test(vector<vector<int>>cost_map) {
     srand((unsigned)time(NULL));
     vector<std::shared_ptr<::theNext::unitBase> > firstGroup;
     for(int i = 0; i < 12; ++i) {
         firstGroup.push_back(::theNext::DNA::tspDNA::makeRandom(cost_map.size()));
     }
-    unitVector<DNA::tspDNA> init(firstGroup);
+    unitVectorMulti<DNA::tspDNA> init(firstGroup);
 
     auto adapt = [&cost_map](const ::theNext::DNA::tspDNA & dna) {
         int sum = 0;
@@ -18,7 +21,7 @@ vector<int> test(vector<vector<int>>cost_map) {
             sum += cost_map[dna.getDNA()[i - 1]][dna.getDNA()[i]];
         }
         sum += cost_map[dna.getDNA()[cost_map.size() - 1]][0];
-        return 1.0 / sum;
+        return maxCost * cost_map.size() - sum;
     };
 
     init.setAdaptFun(adapt);
@@ -70,33 +73,59 @@ vector<int> tx(vector<vector<int>>d) {
 int getRandom(int max) {
     return rand() % max + 1;
 }
-int count (vector<vector<int> >&cost_map,vector<int>path){
-    int sum =0;
-    for (int i=1;i<path.size();++i){
-        sum += cost_map[path[i-1]][path[i]];
+int count(vector<vector<int> > &cost_map, vector<int>path) {
+    int sum = 0;
+    for(int i = 1; i < path.size(); ++i) {
+        sum += cost_map[path[i - 1]][path[i]];
     }
-    return sum + cost_map[path.size()-1][0];
+    return sum + cost_map[path.size() - 1][0];
+}
+vector<int> baoli(vector<vector<int> > map) {
+    vector<int> pl(map.size());
+    for(int i = 0; i < map.size(); ++i) {
+        pl[i] = i;
+    }
+    vector<int> best(map.size()), worse(map.size());
+    int bestcount = -1, worsecount = maxCost * map.size();
+    do {
+        int now = count(map, pl);
+        if(now > bestcount) {
+            bestcount = now;
+            std::copy(pl.begin(), pl.end(), best.begin());
+        }
+        // if(now < worsecount) {
+        //     worsecount = now;
+        //     std::copy(pl.begin(), pl.end(), worse.begin());
+        // }
+    } while(::std::next_permutation(pl.begin(), pl.end()));
+    return best;
 }
 int main() {
-    const int problemSize = 200;
+    int problemSize = 100;
+    cin >> problemSize;
     vector<vector<int>> cost_map(problemSize);
     for(auto it = cost_map.begin(); it != cost_map.end(); ++it) {
         it->resize(problemSize);
         for(auto i = it->begin(); i != it->end(); ++i) {
-            *i = getRandom(255);
+            auto base = getRandom(maxCost);
+            *i = base * base * base;
         }
     }
     for(int i = 0; i < cost_map.size(); ++i) {
         cost_map[i][i] = 0;
     }
-    vector<int> ans_test, ans_tx;
+    vector<int> ans_test, ans_tx, ans_bl;
     auto time_test = ::theNext::main([&cost_map, &ans_test]() {
         ans_test = test(cost_map);
     });
-    auto time_tx = ::theNext::main([&cost_map, &ans_tx](){
+    cout << count(cost_map, ans_test) << "\t: " << time_test << endl;
+    auto time_tx = ::theNext::main([&cost_map, &ans_tx]() {
         ans_tx = tx(cost_map);
     });
-    cout << count(cost_map,ans_test) << " : " << count(cost_map,ans_tx) << endl; 
-    cout << time_test <<" : " << time_tx << endl;
+    cout  << count(cost_map, ans_tx) << "\t: " << time_tx << endl;
+    auto time_bl = ::theNext::main([&cost_map, &ans_bl]() {
+        ans_bl = baoli(cost_map);
+    });
+    cout << count(cost_map, ans_bl) << "\t: " << time_bl << endl;
     return 0;
 }
