@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <algorithm>  // 全排列函数 next_permutation
 #include <math.h>

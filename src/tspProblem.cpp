@@ -1,5 +1,5 @@
-#include "DNA/DNAtsp.hpp"
-#include "unitVectorMulti.hpp"
+#include "genetic/DNA/DNAtsp.hpp"
+#include "genetic/unitVectorMulti.hpp"
 #include "test_tool.hpp"
 #include "TSP/TSPtool.hpp"
 #include <iostream>

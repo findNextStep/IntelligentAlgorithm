@@ -2,8 +2,8 @@
 #include <math.h> // max
 #include <algorithm> // std::sort
 #include "test_tool.hpp"
-#include "DNA/DNABool.hpp"
-#include "unitVectorMulti.hpp"
+#include "genetic/DNA/DNABool.hpp"
+#include "genetic/unitVectorMulti.hpp"
 #include <utility> // std::pair
 #include <vector>
 using ::std::cin;
