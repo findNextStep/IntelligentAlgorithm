@@ -57,6 +57,43 @@ public:
             this-> group.push_back(man);
         }
     }
+    virtual unitVector<T> increase() {
+        // 随机数种子重设
+        srand((unsigned)time(NULL));
+        // 保存下一代的数组
+        bv nextGeneration(this->group);
+        std::mutex next_mutex;
+        // 对于所有父本，产生子代
+        multiFor<::std::shared_ptr<unitBase> >(this->group, [&next_mutex,&nextGeneration, this](::std::shared_ptr<unitBase> item, int i) {
+            auto son = item->copy();
+            // 判断是否需要交叉
+            if(theNext::unitVector<T>::needToDo(this->overlapRate)) {
+                int mother = rand() % this->group.size();
+                son->overlap(this->group.at(mother));
+            }
+            // 判断是否需要变异
+            if(theNext::unitVector<T>::needToDo(this->variationRate)) {
+                son->variation(this->variationRate);
+            }
+            if(son) {
+                next_mutex.lock();
+                nextGeneration.push_back(son);
+                next_mutex.unlock();
+            }
+        });
+        if(this->check && this->fix) {
+            for(int i = 0; i < nextGeneration.size(); ++i) {
+                if(!this->check(nextGeneration[i])) {
+                    this->fix(nextGeneration[i]);
+                }
+            }
+        }
+        unitVector<T>result(nextGeneration);
+        result.setAdaptFun(this->adaptFun);
+        result.setOverlapRate(this->overlapRate);
+        result.setVariationRate(this->variationRate);
+        return unitVector<T>(result);
+    }
 protected:
     template<typename X>
     void static multiFor(std::vector<X> &list, const std::function<void(X, int)> &func) {

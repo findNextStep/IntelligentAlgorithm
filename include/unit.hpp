@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <functional>
 #include <memory>
@@ -71,7 +72,7 @@ public:
      * 产生的子代数量将是父代的两倍
      * @return unitVector<unit> 繁殖产生的种群
      */
-    virtual unitVector<unit> increase()const {
+    virtual unitVector<unit> increase() {
         // 随机数种子重设
         srand((unsigned)time(NULL));
         // 保存下一代的数组

@@ -21,7 +21,7 @@ vector<bool> test(const vector<pair<int, int> > &things, int max_weight) {
         // firstGroup.push_back(::std::make_shared<::theNext::DNA::boolDNA>(dna));
         firstGroup.push_back(::theNext::DNA::boolDNA::makeRandomDNA(things.size()));
     }
-    ::theNext::unitVectorMulti<::theNext::DNA::boolDNA> init(firstGroup);
+    ::theNext::unitVector<::theNext::DNA::boolDNA> init(firstGroup);
     init.setFixAndCheckFun(
     [&things, &max_weight](::std::shared_ptr<::theNext::unitBase> &unit) {
         int sum = 0;

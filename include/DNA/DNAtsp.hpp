@@ -1,8 +1,10 @@
 #pragma once
+#include <iostream>
 #include "unit.hpp"
 #include <vector>
 namespace theNext {
 namespace DNA {
+    using std::vector;
 class tspDNA: public unitBase {
 public:
     typedef ::std::vector<int> DNA_t;
@@ -25,19 +27,38 @@ public:
 
     void overlap(const ::std::shared_ptr<unitBase> &base) {
         DNA_t others_dna(((unit_t *)base.get())->getDNA());
-        int i = rand() % path.size(), v;
-        do {
-            v = path[i];
-            path[i] = others_dna[i];
-            if(findI(path, v) == -1) {
-                i = findI(others_dna, v);
-            } else {
-                break;
+        int max_point, max = 0;
+        // for(int i = 1; i < cost_map.size(); ++i) {
+        //     if(cost_map[path[i - 1]][path[i]] > max) {
+        //         max = cost_map[path[i - 1]][path[i]];
+        //         max_point = i;
+        //     }
+        // }
+        // if(cost_map[*path.rbegin()][path[0]] > max) {
+        //     max_point = path.size() - 1;
+        // }
+        while(rand() % 2) {
+            int i = rand() % path.size(), v;
+            // i = max_point;
+            while(i == 0) {
+                i = rand() % path.size();
             }
-        } while(true);
+            do {
+                v = path[i];
+                path[i] = others_dna[i];
+                if(findI(path, v) == -1) {
+                    i = findI(others_dna, v);
+                } else {
+                    break;
+                }
+            } while(true);
+        }
     }
     ::std::shared_ptr<unitBase> copy() {
         ::std::shared_ptr<unitBase> ptr(new tspDNA(this->path.size()));
+        for(int i = 0; i < path.size(); ++i) {
+            ((tspDNA *)ptr.get())->getDNA()[i] = path[i];
+        }
         return ptr;
     }
     std::vector<int> &getDNA() {
@@ -45,6 +66,16 @@ public:
     }
     const std::vector<int> &getDNA()const {
         return this->path;
+    }
+    static void setMap(vector<vector<int>> &map) {
+        cost_map.resize(map.size());
+        for(int i = 0; i < map.size(); ++i) {
+            cost_map.resize(0);
+            cost_map.reserve(map.size());
+            for(int j = 0; j < map[i].size(); ++j) {
+                cost_map[i].push_back(map[i][j]);
+            }
+        }
     }
     static ::std::shared_ptr<unitBase> makeRandom(int size) {
         auto t = new tspDNA(size);
@@ -57,7 +88,8 @@ public:
         return ans;
     }
 protected:
-    static int findI(::std::vector<int> &contain, int value) {
+    static vector<vector<int> > cost_map;
+    static int findI(const ::std::vector<int> &contain, int value) {
         for(int i = 0; i < contain.size(); ++i) {
             if(contain.at(i) == value) {
                 return i;
@@ -68,6 +100,6 @@ protected:
 private:
     std::vector<int> path;
 };
-
+vector<vector<int> > tspDNA::cost_map;
 }
 }
