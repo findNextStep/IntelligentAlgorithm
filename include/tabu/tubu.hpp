@@ -21,7 +21,7 @@ public:
 protected:
     bool tubeIt(T son) {
         for(auto item : tube) {
-            if(!this->cmp(item, son)) {
+            if(this->cmp(item, son)) {
                 return false;
             }
         }
@@ -38,16 +38,13 @@ protected:
         int i = 0;
         for(auto fun : this->operation_list) {
             auto son = fun(this->now);
-            if(!tubeIt(son)) {
-                std::cout << "get";
+            if(tubeIt(son)) {
                 double adapt = this->adapt(son);
                 if(adapt > best_adapt) {
-
-                    std::cout << " in";
                     best_adapt = adapt;
                     best = son;
                 }
-                std::cout << ::std::endl;
+                // std::cout << ::std::endl;
             }
             // std::cout << "i"<<++i<<std::endl;
         }

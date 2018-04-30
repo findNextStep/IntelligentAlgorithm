@@ -9,7 +9,7 @@ using ::std::cout;
 using ::std::endl;
 using ::std::vector;
 vector<int> tx(const vector<vector<int>> &map) {
-    ::theNext::tubeHelper<vector<int>, 100> tube;
+    ::theNext::tubeHelper<vector<int>, 10> tube;
     tube.setAdaptFun([&map](const vector<int> &path) {
         return ::theNext::count(map, path);
     }).setCmp([](auto a, auto b) {
@@ -21,12 +21,9 @@ vector<int> tx(const vector<vector<int>> &map) {
         return true;
     });
     for(int i = 0; i < map.size(); ++i) {
-        tube.addOperator([i, &map](auto start) {
-            if(i == map.size() - 1) {
-                std::swap(start[0], start[i]);
-            } else {
-                std::swap(start[i], start[i + 1]);
-            }
+        for(int j = 0; j < i; ++j)
+            tube.addOperator([i, j, &map](auto start) {
+            std::swap(start[j], start[i]);
             return start;
         });
     }
@@ -36,35 +33,40 @@ vector<int> tx(const vector<vector<int>> &map) {
     }
     vector<int> best = init;
     tube.setNow(init);
-    for(int i = 0; i < 100; ++i) {
-        for(auto i : tube.getNow()) {
-            cout << i << '\t' ;
-        }
-        cout << endl;
+    for(int i = 0; i < map.size() * map.size(); ++i) {
+        // for(auto i : tube.getNow()) {
+        //     cout << i << '\t' ;
+        // }
+        // cout << endl;
         if(!tube.nextStep()) {
-            cout << "???" << i << endl;
+            // cout << "???" << i << endl;
             break;
         }
-        if (::theNext::count(map,best) < ::theNext::count(map,tube.getNow())){
+        if(::theNext::count(map, best) < ::theNext::count(map, tube.getNow())) {
             best = tube.getNow();
         }
+        // cout << i << "\t" << ::theNext::count(map, best) << endl;
     }
     return best;
 }
 int main() {
-    auto map = ::theNext::make_map_random(10);
+    auto map = ::theNext::make_map_random(5);
     vector<int> ans;
-    ::theNext::main([&ans, &map]() {
+    cout << ::theNext::main([&ans, &map]() {
         ans = tx(map);
-    });
-    for(auto i : ans) {
-        cout << i << '\t';
-    }cout << endl;
+    }) << "\t";
+    // for(auto i : ans) {
+    //     cout << i << '\t';
+    // }
+    // cout << endl;
     cout << ::theNext::count(map, ans) << endl;
-    ans = ::theNext::baoli(map,true);
-    for(auto i : ans) {
-        cout << i << '\t';
-    }cout << endl;
+    cout << ::theNext::main([&ans, &map]() {
+        ans = ::theNext::baoli(map, true);
+    }) << '\t';
+    // for(auto i : ans) {
+    //     cout << i << '\t';
+    // }
+    // cout << endl;
     cout << ::theNext::count(map, ans) << endl;
     return 0;
 }

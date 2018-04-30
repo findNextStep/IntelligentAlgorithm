@@ -12,4 +12,4 @@ target_link_libraries(knapsackProblem pthread)
 add_executable(tspProblem src/tspProblem.cpp)
 target_link_libraries(tspProblem pthread)
 
-add_executable(tspTube src/tspTube.cpp)
+add_executable(tspTube src/tspTubu.cpp)
