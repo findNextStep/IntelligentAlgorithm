@@ -90,12 +90,12 @@ vector<int> baoli(vector<vector<int> > map, bool big = false) {
         if(big) {
             if(now > bestcount) {
                 bestcount = now;
-                std::copy(pl.begin(), pl.end(), best.begin());
+                best = pl;
             }
         } else {
             if(now < worsecount) {
                 worsecount = now;
-                std::copy(pl.begin(), pl.end(), worse.begin());
+                worse = pl;
             }
         }
         if(pl[0] != 0) {

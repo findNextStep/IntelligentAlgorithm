@@ -2,6 +2,7 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <iostream>
 namespace theNext {
 /**
  * @brief 建立一个禁忌算法求解的抽象
@@ -19,8 +20,8 @@ public:
     tubeHelper() {}
 protected:
     bool tubeIt(T son) {
-        for(auto item : son) {
-            if(cmp(item, son)) {
+        for(auto item : tube) {
+            if(!this->cmp(item, son)) {
                 return false;
             }
         }
@@ -34,17 +35,24 @@ protected:
     virtual T next() {
         T best;
         double best_adapt = -1;
+        int i = 0;
         for(auto fun : this->operation_list) {
             auto son = fun(this->now);
             if(!tubeIt(son)) {
+                std::cout << "get";
                 double adapt = this->adapt(son);
-                if(adapt < best_adapt) {
+                if(adapt > best_adapt) {
+
+                    std::cout << " in";
                     best_adapt = adapt;
                     best = son;
                 }
+                std::cout << ::std::endl;
             }
+            // std::cout << "i"<<++i<<std::endl;
         }
         if(best_adapt == -1) {
+            std::cout << "woc" << std::endl;
             return now;
         } else {
             return best;
@@ -63,6 +71,7 @@ public:
         if(this->cmp(n, now)) {
             return false;
         }
+        this->now = n;
         if(this->tube.size() > size) {
             this->tube.pop_front();
         }
@@ -99,14 +108,15 @@ public:
      * @param fun 适应值函数
      * @return unitVector<const unit&>& this
      */
-    this_t &setAdaptFun(const std::function<T(const unit &)> &fun) {
-        this->adaptFun = [fun](const unit & un) {
+    template<class return_T>
+    this_t &setAdaptFun(const std::function<return_T(const T &)> &fun) {
+        this->adapt = [fun](const T & un) {
             return (double)fun(un);
         };
         return *this;
     }
-    this_t &setAdaptFun(const std::function<double(const unit &)> &fun) {
-        this->adaptFun = fun;
+    this_t &setAdaptFun(const std::function<double(const T &)> &fun) {
+        this->adapt = fun;
         return *this;
     }
     /**
