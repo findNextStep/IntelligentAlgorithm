@@ -10,14 +10,19 @@ namespace theNext {
  * @tparam T 求解对象
  * @tparam size 禁忌表大小
  */
-template<class T, int size>
+template<class T>
 class tubeHelper {
 public:
     typedef ::std::function<T(T)> operation_t;
     typedef ::std::vector<operation_t> operator_list_t;
-    typedef tubeHelper<T, size> this_t;
+    typedef tubeHelper<T> this_t;
 public:
-    tubeHelper() {}
+    /**
+     * @brief tubu算法的构造函数
+     * 
+     * @param input_size 禁忌表长度
+     */
+    tubeHelper(int input_size): size(input_size) {}
 protected:
     bool tubeIt(T son) {
         for(auto item : tube) {
@@ -103,7 +108,7 @@ public:
      * @brief 设置适应值函数
      * 返回值应当是一个非负的数值，表示个体的适应值，彼此之间差距应当较小
      * @param fun 适应值函数
-     * @return unitVector<const unit&>& this
+     * @return this_t& this
      */
     template<class return_T>
     this_t &setAdaptFun(const std::function<return_T(const T &)> &fun) {
@@ -148,5 +153,9 @@ private:
      * @brief 设置禁忌比较函数
      */
     ::std::function<bool(T, T)> cmp;
+    /**
+     * @brief 禁忌表大小
+     */
+    const int size;
 };
 }

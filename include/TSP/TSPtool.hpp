@@ -39,9 +39,10 @@ int count(const vector<vector<int> > &cost_map, vector<int>path) {
  * @brief 通过贪心算法计算tsp最小值的路径
  * 算法是在网上找到的
  * @param d 给定估值地图
+ * @param big 是否求取最大值
  * @return vector<int> 最优路径
  */
-vector<int> tx(const vector<vector<int>> &d) {
+vector<int> tx(const vector<vector<int>> &d, bool big = false) {
     vector<int>S(d.size());
     int i = 0, k, l, j, sum = 0;
     do {
@@ -58,9 +59,16 @@ vector<int> tx(const vector<vector<int>> &d) {
                     l++;
                 }
             } while(l < i);
-            if(flag == 0 && d[k][S[i - 1]] < Dtemp) { /*D[k][S[i - 1]]表示当前未被访问的城市k与上一个已访问过的城市i-1之间的距离*/
-                j = k;//j用于存储已访问过的城市k
-                Dtemp = d[k][S[i - 1]];//Dtemp用于暂时存储当前最小路径的值
+            if(big) {
+                if(flag == 0 && d[k][S[i - 1]] > Dtemp) { /*D[k][S[i - 1]]表示当前未被访问的城市k与上一个已访问过的城市i-1之间的距离*/
+                    j = k;//j用于存储已访问过的城市k
+                    Dtemp = d[k][S[i - 1]];//Dtemp用于暂时存储当前最小路径的值
+                }
+            } else {
+                if(flag == 0 && d[k][S[i - 1]] < Dtemp) { /*D[k][S[i - 1]]表示当前未被访问的城市k与上一个已访问过的城市i-1之间的距离*/
+                    j = k;//j用于存储已访问过的城市k
+                    Dtemp = d[k][S[i - 1]];//Dtemp用于暂时存储当前最小路径的值
+                }
             }
             k++;
         } while(k < d.size());
@@ -73,10 +81,10 @@ vector<int> tx(const vector<vector<int>> &d) {
 
 /**
  * @brief 基于全排列遍历的最优解查找
- * 
- * @param map 查找的估值地图 
+ *
+ * @param map 查找的估值地图
  * @param big 是否查找最大值
- * @return vector<int> 最优路径 
+ * @return vector<int> 最优路径
  */
 vector<int> baoli(vector<vector<int> > map, bool big = false) {
     vector<int> pl(map.size());
@@ -128,5 +136,34 @@ vector<vector<int> > make_map_random(int problemSize) {
         cost_map[i][i] = 0;
     }
     return cost_map;
+}
+/**
+ * @brief 通过贪心方式获取一个最大/最小的初始化值
+ * 
+ * @param map 地图
+ * @param big 是否求取最大值
+ * @return vector<int> 初始值
+ */
+vector<int> make_init_small(const vector<vector<int> > &map, bool big = false) {
+    vector<int> result(map.size());
+    result[0] = 0;
+    for(int i = 1; i < map.size(); ++i) {
+        int n = 0;
+        for(int j = 1; j < map.size(); ++j) {
+            if(i != j) {
+                if(big) {
+                    if(map[i][j] > map[i][n]) {
+                        n = j;
+                    }
+                } else {
+                    if(map[i][j] < map[i][n]) {
+                        n = j;
+                    }
+                }
+            }
+        }
+        result[i] = n;
+    }
+    return result;
 }
 }
