@@ -2,6 +2,8 @@
 #include <vector>
 #include <functional>
 #include <math.h>
+#include <iostream>
+using namespace std;
 #include "test_tool.hpp"
 
 namespace theNext {
@@ -11,18 +13,22 @@ public:
     typedef annealing<T> this_t;
     typedef ::std::function<T(T)> operation_t;
 public:
-    annealing();
+    annealing() {};
 
 public:
 // 主要循环操作
-    void SAoperation(){
-        multiFor(this->units,[&this](auto unit,int i){
-            int op_i = rand() / this->operation_list.size();
-            auto son = this->operation_list.at(op_i);
-            if (this->canLeave(this->adapt(unit),this->adapt(son))){
+    void SAoperation() {
+        multiFor<T, 8>(this->units, [this](auto unit, int i) {
+            int op_i = rand() % this->operation_list.size();
+            auto son = this->operation_list.at(op_i)(unit);
+            // cout << i << endl;
+            if(this->canLeave(this->adapt(unit), this->adapt(son))) {
                 this->units.at(i) = son;
             }
-        })
+        });
+    }
+    auto getunits() {
+        return this->units;
     }
 public:
 // 一些设置函数
@@ -66,16 +72,16 @@ protected:
      * @return true 以rate的概率返回
      * @return false 以(1-rate)的概率返回
      */
-    static bool needToDo(rate_t rate) {
-        rate_t luck = rand() / rate_t(RAND_MAX);
+    static bool needToDo(double rate) {
+        double luck = rand() / double(RAND_MAX);
         return luck <= rate;
     }
 private:
-    std::vector<T> units;
+    ::std::vector<T> units;
     /**
      * @brief 保存操作的数组
      */
-    operator_list_t operation_list;
+    ::std::vector<operation_t> operation_list;
     /**
      * @brief 适应值函数
      */

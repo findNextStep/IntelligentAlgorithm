@@ -47,7 +47,10 @@ vector<int> tx(const vector<vector<int>> &d, bool big = false) {
     int i = 0, k, l, j, sum = 0;
     do {
         int k = 1;
-        int Dtemp = 10000;
+        int Dtemp = d.size() * maxCost * 2;
+        if (big){
+            Dtemp = 0;
+        }
         do {
             int l = 0;
             int flag = 0;
@@ -139,7 +142,7 @@ vector<vector<int> > make_map_random(int problemSize) {
 }
 /**
  * @brief 通过贪心方式获取一个最大/最小的初始化值
- * 
+ *
  * @param map 地图
  * @param big 是否求取最大值
  * @return vector<int> 初始值
@@ -165,5 +168,18 @@ vector<int> make_init_small(const vector<vector<int> > &map, bool big = false) {
         result[i] = n;
     }
     return result;
+}
+
+vector<int> make_randowm_path(int size) {
+    vector<int> path(size);
+    for(int i = 0; i < size; ++i) {
+        path[i] = i;
+    }
+    for(int i = 2; i < path.size(); ++i) {
+        // 使i与之前某个量交换
+        int k = i - rand() % i;
+        std::swap(path.at(i), path.at(k));
+    }
+    return path;
 }
 }

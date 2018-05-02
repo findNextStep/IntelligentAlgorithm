@@ -1,15 +1,22 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(geneticAlgorithm)
+project(IntelligentCalculation)
+# 采用c++14的auto关键字和新的标准库
 add_compile_options(-std=c++14)
 
 include_directories(
     include
 )
+# 多线程库需要
+link_libraries(pthread)
 
+# 背包问题的遗传算法求解
 add_executable(knapsackProblem src/knapsackProblem.cpp)
-target_link_libraries(knapsackProblem pthread)
 
+# tsp问题的遗传算法求解
 add_executable(tspProblem src/tspProblem.cpp)
-target_link_libraries(tspProblem pthread)
 
+# tsp问题的禁忌搜索算法求解
 add_executable(tspTube src/tspTubu.cpp)
+
+# tsp问题的模拟退火算法求解
+add_executable(tspAnnealing src/tspAnnealing.cpp)
