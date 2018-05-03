@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>  // 全排列函数 next_permutation
 #include <math.h>
+
 namespace theNext {
 using ::std::vector;
 
@@ -27,7 +28,7 @@ int getRandom(int max) {
  * @param path 路径
  * @return int 路径开销
  */
-int count(const vector<vector<int> > &cost_map, vector<int>path) {
+int count(const vector<vector<int> > &cost_map, const vector<int> &path) {
     int sum = 0;
     for(int i = 1; i < path.size(); ++i) {
         sum += cost_map[path[i - 1]][path[i]];
@@ -48,7 +49,7 @@ vector<int> tx(const vector<vector<int>> &d, bool big = false) {
     do {
         int k = 1;
         int Dtemp = d.size() * maxCost * 2;
-        if (big){
+        if(big) {
             Dtemp = 0;
         }
         do {

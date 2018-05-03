@@ -3,6 +3,8 @@
 #include <functional>
 #include <math.h>
 #include "TSP/TSPtool.hpp"
+#include <iostream>
+using namespace std;
 
 namespace theNext {
 class antGroup {
@@ -53,16 +55,30 @@ public:
         }
         for(auto it = ants.begin(); it != ants.end(); ++it) {
             *it = antFindPath();
-            int count = theNext::count(map, *it);
+            int count = ::theNext::count(this->map, *it);
+
             if(count > best && big || count < best && !big) {
                 best = count;
                 result = *it;
             }
         }
+
         for(auto path : ants) {
             addMessage(path);
         }
-        return result;
+        for (auto p = this->messages.begin();p != this->messages.end();++p){
+            for (auto i = p->begin();i!=p->end();++i){
+                // *i =(*i+1)/2;
+                *i *= 0.95;
+            }
+        }
+        // for(auto line : this->messages) {
+        //     for(auto i : line) {
+        //         cout << i - 1 << '\t';
+        //     }
+        //     cout << endl;
+        // }cout << endl;
+        return ants[0];
     }
 protected:
     /**
@@ -117,15 +133,21 @@ protected:
      * @return path_t 蚂蚁获取的路径
      */
     path_t antFindPath() {
-        path_t result(map.size());
+        int size = this->map.size();
+        vector<int> result;
+        // cout << "test" << size << endl;
+        result.reserve(map.size() + 1);
+        // cout << result.capacity() << endl;
+        result.resize(map.size());
+        // cout << "test" << endl;
         result[0] = 0;
         int p = 0;
         while(p < result.size()) {
-            auto worth = makeWorth(result[p]);
+            auto worth = this->makeWorth(result[p]);
             for(int i = 0; i <= p; ++i) {
-                worth[result[i]] =  0.0;
+                worth[result[i]] = 0.0;
             }
-            result[++p] = select(worth);
+            result[++p] = this->select(worth);
         }
         return result;
     }
@@ -145,6 +167,7 @@ protected:
                 worth[i] *= pow(this->map[path][i], -path_power);
             }
         }
+        return worth;
     }
     /**
      * @brief 进行一次轮盘赌运算
@@ -172,6 +195,6 @@ private:
     bool big;
     // 信息素量
     ::std::vector<::std::vector<double> > messages;
-    map_t map;
+    const map_t map;
 };
 }

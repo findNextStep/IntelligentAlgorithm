@@ -20,3 +20,6 @@ add_executable(tspTube src/tspTubu.cpp)
 
 # tsp问题的模拟退火算法求解
 add_executable(tspAnnealing src/tspAnnealing.cpp)
+
+# tsp问题的蚁群算法求解
+add_executable(tspAnt src/tspAnt.cpp)

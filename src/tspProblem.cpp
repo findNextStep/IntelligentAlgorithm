@@ -55,7 +55,7 @@ int main() {
         auto time_test = ::theNext::main([&cost_map, &ans_test]() {
             ans_test = test(cost_map);
         });
-        cout << count(cost_map, ans_test) << "\t";//: " << time_test << endl;
+        cout << count(cost_map, ans_test) << "\t" << time_test << "\t" << flush; //: " << time_test << endl;
         // auto time_tx = ::theNext::main([&cost_map, &ans_tx]() {
         //     ans_tx = tx(cost_map);
         // });
