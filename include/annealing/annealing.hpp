@@ -1,9 +1,8 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <functional>
 #include <math.h>
-#include <iostream>
-using namespace std;
 #include "test_tool.hpp"
 
 namespace theNext {
