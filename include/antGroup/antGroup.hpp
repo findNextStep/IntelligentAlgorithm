@@ -136,6 +136,13 @@ protected:
         int size = this->map.size();
         vector<int> result;
         // cout << "test" << size << endl;
+        // 迷之bug TODO
+        // 这里如果没有这一句会在6,10,14等map.size()下
+        // 在第二次(或者更高次)进入此处resize(或者构造函
+        // 数时)出现程序崩溃
+        // 测试环境
+        // g++ --version
+        // g++ (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
         result.reserve(map.size() + 1);
         // cout << result.capacity() << endl;
         result.resize(map.size());
