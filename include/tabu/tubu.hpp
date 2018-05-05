@@ -2,7 +2,6 @@
 #include <vector>
 #include <list>
 #include <functional>
-#include <iostream>
 namespace theNext {
 /**
  * @brief 建立一个禁忌算法求解的抽象
@@ -54,7 +53,6 @@ protected:
             // std::cout << "i"<<++i<<std::endl;
         }
         if(best_adapt == -1) {
-            std::cout << "woc" << std::endl;
             return now;
         } else {
             return best;

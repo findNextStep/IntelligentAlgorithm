@@ -4,8 +4,6 @@
 #include <functional>
 #include <utility>
 #include <vector>
-#include <iostream>
-using namespace std;
 
 namespace theNext {
 template <size_t size> class paricleSwarm {

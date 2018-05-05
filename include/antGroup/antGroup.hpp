@@ -3,8 +3,6 @@
 #include <functional>
 #include <math.h>
 #include "TSP/TSPtool.hpp"
-#include <iostream>
-using namespace std;
 
 namespace theNext {
 class antGroup {
