@@ -23,3 +23,6 @@ add_executable(tspAnnealing src/tspAnnealing.cpp)
 
 # tsp问题的蚁群算法求解
 add_executable(tspAnt src/tspAnt.cpp)
+
+# 粒子群算法样例
+add_executable(testParticleSwarm src/testParticleSwarm.cpp)
