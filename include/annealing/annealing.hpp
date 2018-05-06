@@ -15,16 +15,26 @@ public:
 
 public:
 // 主要循环操作
+    /**
+     * @brief 进行一次模拟退火迭代
+     * 这种迭代会使用八个线程
+     */
     void SAoperation() {
+        // 这里采用了多线程处理的方法
+        // 具体实现在test_tool.hpp中
         multiFor<T, 8>(this->units, [this](auto unit, int i) {
             int op_i = rand() % this->operation_list.size();
             auto son = this->operation_list.at(op_i)(unit);
-            // cout << i << endl;
             if(this->canLeave(this->adapt(unit), this->adapt(son))) {
                 this->units.at(i) = son;
             }
         });
     }
+    /**
+     * @brief 获取当前所有个体
+     * 
+     * @return auto 
+     */
     auto getunits() {
         return this->units;
     }
@@ -59,8 +69,10 @@ protected:
      */
     bool canLeave(double old_adapt, double new_adapt) {
         if(new_adapt > old_adapt) {
+            // 更优解,选择
             return true;
         } else {
+            // 根据公式判断是否接受劣化
             return needToDo(exp((new_adapt - old_adapt) / this->temperature));
         }
     }

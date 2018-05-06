@@ -9,21 +9,32 @@ using ::std::cout;
 using ::std::endl;
 using ::std::flush;
 
+/**
+ * @brief 通过模拟退火算法求解TSP问题
+ *
+ * 计算步数为地图宽度
+ * @param map 估值地图
+ * @param big 是否求取最大值
+ * @param complex 是否采用精细求解
+ * @return vector<int> 求取的最优解
+ */
 vector<int> annealing(const vector<vector<int> > &map, bool big = false, bool complex = false) {
     ::theNext::annealing<vector<int> > init;
     for(int i = 0; i < map.size() * 10; ++i) {
         init.addunit(::theNext::make_randowm_path(map.size()));
     }
+    // 设置适应值函数
     init.setAdaptFun([&map, &big](auto path) {
         if(big) {
             return 1.0 * ::theNext::count(map, path);
         } else {
             return 1.0 / ::theNext::count(map, path);
         }
-    }).setTemperature(1000.0);
+    });
 
     // 添加操作参数
     if(complex) {
+        // 如果选择精细求解,输入全部可以执行的操作
         for(int i = 1; i < map.size(); ++i) {
             for(int j = 0; j < i; ++j)
                 init.addOperator([i, j, &map](auto start) {
@@ -47,13 +58,10 @@ vector<int> annealing(const vector<vector<int> > &map, bool big = false, bool co
     // 逐代迭代
     double temperature = 50;
     while(temperature > 0.5) {
+        // 每次降温到原来的95%
         temperature = temperature * 0.95;
         init.setTemperature(temperature);
         init.SAoperation();
-        // for(auto unit : init.getunits()) {
-        //     cout << ::theNext::count(map, unit) << "\t";
-        // }
-        // cout << endl;
     }
 
     int best = 0;
@@ -61,35 +69,21 @@ vector<int> annealing(const vector<vector<int> > &map, bool big = false, bool co
         best = map.size() * ::theNext::maxCost;
     }
     vector<int > best_unit(map.size());
+    // 在最终的所有个体中选择最优个体
     for(auto unit : init.getunits()) {
-        // for(auto i : unit) {
-        //     cout << i << "\t";
-        // }
-        // cout << endl;
         int ada = ::theNext::count(map, unit);
-        // cout << ada << endl;
         if(((best > ada) && !big) || ((best < ada) && big)) {
             best = ada;
             best_unit = unit;
-            // cout << "new best" << endl;
-            // for(auto i : unit) {
-            //     cout << i << "\t";
-            // }
-            // cout << endl;
         }
     }
-    // cout << "???" << best_unit.size() <<  endl;
-    // for(auto i : best_unit) {
-    //     cout << i << "\t";
-    // }
-    // cout << endl;
     return best_unit;
 }
 
 /**
  * @brief 通过禁忌搜索算法求取tsp问题
  * 禁忌表长度为地图宽度的$\frac14$
- * 计算步数为地图宽度 
+ * 计算步数为地图宽度
  * @param map 估值地图
  * @param big 是否求取最大值
  * @param complex 是否采用精细求解
@@ -140,10 +134,6 @@ vector<int> testtubu(const vector<vector<int>> &map, bool big = false, bool comp
     tube.setNow(init);
     int c = 0;
     for(int i = 0; i < map.size(); ++i) {
-        // for(auto i : tube.getNow()) {
-        //     cout << i << '\t' ;
-        // }
-        // cout << endl;
         if(!tube.nextStep()) {
             cout << "???" << i << endl;
             break;
@@ -159,9 +149,7 @@ vector<int> testtubu(const vector<vector<int>> &map, bool big = false, bool comp
                 best = tube.getNow();
             }
         }
-        // cout << i << "\t" << ::theNext::count(map, best) << endl;
     }
-    // cout << c << "\t";
     return best;
 }
 
@@ -190,7 +178,7 @@ int main() {
         cout << ::theNext::count(map, ans) << "\t" << ::std::flush;
 
         cout << ::theNext::main([&ans, &map]() {
-            ans = testtubu(map, false);
+            ans = testtubu(map, true, false);
         }) << '\t';
         // for(auto i : ans) {
         //     cout << i << '\t';
