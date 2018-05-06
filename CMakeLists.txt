@@ -26,3 +26,6 @@ add_executable(tspAnt src/tspAnt.cpp)
 
 # 粒子群算法样例
 add_executable(testParticleSwarm src/testParticleSwarm.cpp)
+
+# 查找最好的遗传算法参数
+add_executable(tspForGeneticParam src/tspForGeneticParam.cpp)

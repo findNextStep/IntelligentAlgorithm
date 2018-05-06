@@ -3,6 +3,7 @@
 #include <functional>
 #include <thread>
 #include <mutex>
+#include <vector>
 namespace theNext {
 
 double main(const std::function<void()> &func) {
