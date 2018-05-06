@@ -23,6 +23,13 @@ public:
      */
     tubeHelper(int input_size): size(input_size) {}
 protected:
+    /**
+     * @brief 判断一个元素是否在禁忌表中
+     * 
+     * @param son 待判断的元素 
+     * @return true 不在禁忌表中
+     * @return false 在禁忌表中
+     */
     bool tubeIt(T son) {
         for(auto item : tube) {
             if(this->cmp(item, son)) {

@@ -11,7 +11,7 @@ using ::std::vector;
 /**
  * @brief 通过禁忌搜索算法求取tsp问题
  * 禁忌表长度为地图宽度的$\frac14$
- * 计算步数为地图宽度 
+ * 计算步数为地图宽度
  * @param map 估值地图
  * @param big 是否求取最大值
  * @param complex 是否采用精细求解
@@ -20,12 +20,14 @@ using ::std::vector;
 vector<int> test(const vector<vector<int>> &map, bool big = false, bool complex = false) {
     ::theNext::tubeHelper<vector<int>> tube(map.size() / 4);
     tube.setAdaptFun([&big, &map](const vector<int> &path) {
+        // 设置适应值函数
         if(big) {
             return ::theNext::count(map, path);
         } else {
             return (int)map.size() * theNext::maxCost - ::theNext::count(map, path);
         }
     }).setCmp([](auto a, auto b) {
+        //设置比较函数,判断两个个体是否相同
         for(int i = 0; i < a.size(); ++i) {
             if(a[i] != b[i]) {
                 return false;
@@ -34,6 +36,7 @@ vector<int> test(const vector<vector<int>> &map, bool big = false, bool complex 
         return true;
     });
     if(complex) {
+        // 如果选择更精细的结果
         for(int i = 1; i < map.size(); ++i) {
             for(int j = 0; j < i; ++j)
                 tube.addOperator([i, j, &map](auto start) {
@@ -42,6 +45,7 @@ vector<int> test(const vector<vector<int>> &map, bool big = false, bool complex 
             });
         }
     } else {
+        // 如果选择简单一些的结果
         for(int i = 0; i < map.size(); ++i) {
             tube.addOperator([i, &map](auto path) {
                 if(i) {
@@ -53,23 +57,20 @@ vector<int> test(const vector<vector<int>> &map, bool big = false, bool complex 
             });
         }
     }
-    // vector<int> init = ::theNext::make_init_small(map,big);
     vector<int> init(map.size());
     for(int i = 0; i < init.size(); ++i) {
         init[i] = i;
     }
     vector<int> best = init;
+    // 设置当前位置
     tube.setNow(init);
     int c = 0;
     for(int i = 0; i < map.size(); ++i) {
-        // for(auto i : tube.getNow()) {
-        //     cout << i << '\t' ;
-        // }
-        // cout << endl;
+        // 寻找下一步
         if(!tube.nextStep()) {
-            cout << "???" << i << endl;
             break;
         }
+        // 更新最优解
         if(big) {
             if(::theNext::count(map, best) < ::theNext::count(map, tube.getNow())) {
                 c = i;
@@ -81,9 +82,7 @@ vector<int> test(const vector<vector<int>> &map, bool big = false, bool complex 
                 best = tube.getNow();
             }
         }
-        // cout << i << "\t" << ::theNext::count(map, best) << endl;
     }
-    // cout << c << "\t";
     return best;
 }
 int main() {
@@ -111,7 +110,7 @@ int main() {
         cout << ::theNext::count(map, ans) << "\t" << ::std::flush;
 
         cout << ::theNext::main([&ans, &map]() {
-            ans = ::theNext::baoli(map, false);
+            ans = ::theNext::tx(map, false);
         }) << '\t';
         // for(auto i : ans) {
         //     cout << i << '\t';
