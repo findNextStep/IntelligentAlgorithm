@@ -108,6 +108,7 @@ public:
      */
     this_t &addOperator(const operation_t &fun) {
         this->operation_list.push_back(fun);
+        return *this;
     }
     /**
      * @brief 设置适应值函数
@@ -134,6 +135,7 @@ public:
      */
     this_t &setCmp(const ::std::function<bool(T, T)> &fun) {
         this->cmp = fun;
+        return *this;
     }
 private:
     /**

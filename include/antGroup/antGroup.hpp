@@ -44,6 +44,11 @@ public:
         return *this;
     }
 public:
+    /**
+     * @brief 计算一次迭代
+     *
+     * @return path_t
+     */
     path_t loopOnce() {
         ::std::vector<path_t> ants(this->ant_size);
         int best = 0;
@@ -52,31 +57,27 @@ public:
             best = ::theNext::maxCost * map.size();
         }
         for(auto it = ants.begin(); it != ants.end(); ++it) {
+            // 随机生成路径
             *it = antFindPath();
             int count = ::theNext::count(this->map, *it);
 
-            if(count > best && big || count < best && !big) {
+            if((count > best && big) || (count < best && !big)) {
                 best = count;
                 result = *it;
             }
         }
 
         for(auto path : ants) {
+            // 对所有路径添加信息素
             addMessage(path);
         }
-        for (auto p = this->messages.begin();p != this->messages.end();++p){
-            for (auto i = p->begin();i!=p->end();++i){
-                // *i =(*i+1)/2;
+        // 对地图所有信息素进行消解
+        for(auto p = this->messages.begin(); p != this->messages.end(); ++p) {
+            for(auto i = p->begin(); i != p->end(); ++i) {
                 *i *= 0.95;
             }
         }
-        // for(auto line : this->messages) {
-        //     for(auto i : line) {
-        //         cout << i - 1 << '\t';
-        //     }
-        //     cout << endl;
-        // }cout << endl;
-        return ants[0];
+        return result;
     }
 protected:
     /**
@@ -85,7 +86,7 @@ protected:
      * @param path 添加信息素依赖的路径
      */
     void addMessage(path_t path) {
-        const double Q = 12;
+        const double Q = 1200;
         // 蚁周模型
         {
             auto sum = ::theNext::count(map, path);
@@ -133,7 +134,6 @@ protected:
     path_t antFindPath() {
         int size = this->map.size();
         vector<int> result;
-        // cout << "test" << size << endl;
         // 迷之bug TODO
         // 这里如果没有这一句会在6,10,14等map.size()下
         // 在第二次(或者更高次)进入此处resize(或者构造函
@@ -142,9 +142,7 @@ protected:
         // g++ --version
         // g++ (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
         result.reserve(map.size() + 1);
-        // cout << result.capacity() << endl;
         result.resize(map.size());
-        // cout << "test" << endl;
         result[0] = 0;
         int p = 0;
         while(p < result.size()) {
@@ -192,6 +190,7 @@ protected:
                 return i;
             }
         }
+        return rates.size() - 1;
     }
 private:
     double message_power;

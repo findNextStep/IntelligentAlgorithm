@@ -32,8 +32,8 @@ public:
     }
     /**
      * @brief 获取当前所有个体
-     * 
-     * @return auto 
+     *
+     * @return auto
      */
     auto getunits() {
         return this->units;
@@ -48,6 +48,7 @@ public:
      */
     this_t &addOperator(const operation_t &fun) {
         this->operation_list.push_back(fun);
+        return *this;
     }
     this_t &setAdaptFun(const std::function<double(const T &)> &fun) {
         this->adapt = fun;
@@ -55,9 +56,11 @@ public:
     }
     this_t &addunit(T unit) {
         this->units.push_back(unit);
+        return *this;
     }
     this_t &setTemperature(double temperature) {
         this->temperature = temperature;
+        return *this;
     }
 protected:
     /**

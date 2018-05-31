@@ -48,6 +48,7 @@ vector<bool> test(const vector<pair<int, int> > &things, int max_weight) {
             }
             return false;
         }
+        return true;
     }, [&things, &max_weight](::std::shared_ptr<::theNext::unitBase> &unit) {
         int sum = 0;
         ::theNext::DNA::boolDNA *un = (::theNext::DNA::boolDNA *)unit.get();
