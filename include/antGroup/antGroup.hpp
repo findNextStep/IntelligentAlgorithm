@@ -133,19 +133,19 @@ protected:
      */
     path_t antFindPath() {
         int size = this->map.size();
-        vector<int> result;
-        // 迷之bug TODO
+        // 迷之bug DONE 原来的方法数组越界了
         // 这里如果没有这一句会在6,10,14等map.size()下
         // 在第二次(或者更高次)进入此处resize(或者构造函
         // 数时)出现程序崩溃
         // 测试环境
         // g++ --version
         // g++ (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609
-        result.reserve(map.size() + 1);
-        result.resize(map.size());
+        vector<int> result(map.size());
+        // result.reserve(map.size() + 1);
+        // result.resize(map.size());
         result[0] = 0;
         int p = 0;
-        while(p < result.size()) {
+        while(p < result.size() - 1) {
             auto worth = this->makeWorth(result[p]);
             for(int i = 0; i <= p; ++i) {
                 worth[result[i]] = 0.0;
